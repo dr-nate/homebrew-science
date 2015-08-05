@@ -3,8 +3,9 @@ require "formula"
 class Gromacs < Formula
   homepage "http://www.gromacs.org/"
   version "5.0.6"
+  desc "GROMACS is a versatile package for performing molecular dynamics calculations, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles, primarily proteins, lipids, and nucleic acids."
   url "ftp://ftp.gromacs.org/pub/gromacs/gromacs-5.0.6.tar.gz"
-  mirror "http://fossies.org/linux/privat/gromacs-5.0.6.tar.gz"
+  mirror "https://fossies.org/linux/privat/gromacs-5.0.6.tar.gz"
   sha256 "e07e950c4cd6cb84b83b145b70a15c25338ad6a7d7d1a0a83cdbd51cad954952"
 
   deprecated_option "with-x" => "with-x11"
@@ -26,13 +27,11 @@ class Gromacs < Formula
     args << "-DGMX_DOUBLE=ON" if build.include? "enable-double"
     args << "-DGMX_X11=ON" if build.with? "x11"
     args << "-DGMX_CPU_ACCELERATION=None" if MacOS.version <= :snow_leopard
-    args << "-DREGRESSIONTEST_DOWNLOAD=ON" unless build.with? "without-check"
+    args << "-DREGRESSIONTEST_DOWNLOAD=ON" if build.with? "check"
 
     inreplace "scripts/CMakeLists.txt", "BIN_INSTALL_DIR", "DATA_INSTALL_DIR"
 
-    system "mkdir", "build"
-
-    cd "build" do
+    mkdir "build" do
       system "cmake", "..", *args
       system "make"
       system "make", "check" if build.with? "check"
