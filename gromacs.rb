@@ -2,9 +2,10 @@ require "formula"
 
 class Gromacs < Formula
   homepage "http://www.gromacs.org/"
-  url "ftp://ftp.gromacs.org/pub/gromacs/gromacs-4.6.5.tar.gz"
-  mirror "https://fossies.org/linux/privat/gromacs-4.6.5.tar.gz"
-  sha1 "6bf86bb514e5488bda988d5b0e98867706d4ecd4"
+  version "5.0.6"
+  url "ftp://ftp.gromacs.org/pub/gromacs/gromacs-5.0.6.tar.gz"
+  mirror "http://fossies.org/linux/privat/gromacs-5.0.6.tar.gz"
+  sha256 "e07e950c4cd6cb84b83b145b70a15c25338ad6a7d7d1a0a83cdbd51cad954952"
 
   deprecated_option "with-x" => "with-x11"
   deprecated_option "enable-mpi" => "with-mpi"
@@ -25,19 +26,22 @@ class Gromacs < Formula
     args << "-DGMX_DOUBLE=ON" if build.include? "enable-double"
     args << "-DGMX_X11=ON" if build.with? "x11"
     args << "-DGMX_CPU_ACCELERATION=None" if MacOS.version <= :snow_leopard
+    args << "-DREGRESSIONTEST_DOWNLOAD=ON" unless build.with? "without-check"
 
     inreplace "scripts/CMakeLists.txt", "BIN_INSTALL_DIR", "DATA_INSTALL_DIR"
 
-    cd "src" do
+    system "mkdir", "build"
+
+    cd "build" do
       system "cmake", "..", *args
       system "make"
-      system "make", "test" if build.with? "check"
+      system "make", "check" if build.with? "check"
       ENV.deparallelize
       system "make", "install"
     end
 
-    bash_completion.install "scripts/completion.bash" => "gromacs-completion.bash"
-    zsh_completion.install "scripts/completion.zsh" => "_gromacs"
+    bash_completion.install "build/scripts/GMXRC" => "gromacs-completion.bash"
+    zsh_completion.install "build/scripts/GMXRC.zsh" => "_gromacs"
   end
 
   def caveats;  <<-EOS.undent
