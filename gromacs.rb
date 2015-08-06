@@ -40,8 +40,8 @@ class Gromacs < Formula
 
     # This is a really hacky solution, but seems needed to pass Homebrew build test
     # Doesn't seem to affect command line completion of built package
-    rm "/usr/local/Cellar/gromacs/5.0.6/bin/gmx-completion-gmx.bash"
-    rm "/usr/local/Cellar/gromacs/5.0.6/bin/gmx-completion.bash"
+    rm "#{bin}/gmx-completion-gmx.bash"
+    rm "#{bin}/gmx-completion.bash"
 
     bash_completion.install "build/scripts/GMXRC" => "gromacs-completion.bash"
     zsh_completion.install "build/scripts/GMXRC.zsh" => "_gromacs"
