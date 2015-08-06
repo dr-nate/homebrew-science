@@ -2,7 +2,6 @@ require "formula"
 
 class Gromacs < Formula
   homepage "http://www.gromacs.org/"
-  version "5.0.6"
   desc "GROMACS is a versatile package for performing molecular dynamics calculations, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles, primarily proteins, lipids, and nucleic acids."
   url "ftp://ftp.gromacs.org/pub/gromacs/gromacs-5.0.6.tar.gz"
   mirror "https://fossies.org/linux/privat/gromacs-5.0.6.tar.gz"
@@ -38,6 +37,10 @@ class Gromacs < Formula
       ENV.deparallelize
       system "make", "install"
     end
+
+    # This is a really hacky solution, but seems needed to pass Homebrew build test
+    # Doesn't seem to affect command line completion of built package
+    system "rm", "/usr/local/Cellar/gromacs/5.0.6/bin/gmx-completion-gmx.bash", "/usr/local/Cellar/gromacs/5.0.6/bin/gmx-completion.bash"
 
     bash_completion.install "build/scripts/GMXRC" => "gromacs-completion.bash"
     zsh_completion.install "build/scripts/GMXRC.zsh" => "_gromacs"
