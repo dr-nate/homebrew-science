@@ -38,12 +38,9 @@ class Gromacs < Formula
       system "make", "install"
     end
 
-    # This is a really hacky solution, but seems needed to pass Homebrew build test
-    # Doesn't seem to affect command line completion of built package
-    rm "#{bin}/gmx-completion-gmx.bash"
-    rm "#{bin}/gmx-completion.bash"
-
     bash_completion.install "build/scripts/GMXRC" => "gromacs-completion.bash"
+    bash_completion.install "#{bin}/gmx-completion-gmx.bash" => "gmx-completion-gmx.bash"
+    bash_completion.install "#{bin}/gmx-completion.bash" => "gmx-completion.bash"
     zsh_completion.install "build/scripts/GMXRC.zsh" => "_gromacs"
   end
 
